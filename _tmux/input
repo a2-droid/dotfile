@@ -1,0 +1,15 @@
+
+function inputsource ()
+{
+    nowinputsource=`InputSourceSelector current |cut -d"." -f5|cut -d" " -f1`
+    if [ "${nowinputsource}" = "Roman" ]; then
+        echo "English"
+    elif [ "${nowinputsource}" = "base" ]; then
+        echo "Japanese"
+    else
+        echo "!!"
+    fi
+    echo $nowinputsource
+}
+
+inputsource
