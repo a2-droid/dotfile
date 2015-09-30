@@ -44,8 +44,6 @@ set showmatch
 
 "7.4からバックスペースで改行などが消せなくなったので追加した
 set backspace=indent,eol,start
-" TODO 何だっけ？
-"nmap <space> za
 "ctr+j,kで移動量を多くする
 noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
@@ -101,9 +99,6 @@ let &t_te.="\e[0 q"
 
 if has('mac') "setting for mac
 
-    "INSERT mode から Normal modeに入るときに英語入力に切り替えるための処理
-    "inoremap <silent> <Esc> <Esc>:call AutoChange()<CR>
-    "inoremap <silent> <C-[> <Esc>:call AutoChange()<CR>
     set t_Co=256
 
     " マウス操作許可のはず
@@ -118,10 +113,6 @@ if has('mac') "setting for mac
     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
     " function for mac
     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-    function AutoChange()
-        :r! InputSourceSelector select com.google.inputmethod.Japanese.Roman
-    endfunction
-
     function Setnumber()
         if !&number && &relativenumber
             set number
@@ -146,46 +137,47 @@ if has('mac') "setting for mac
         call neobundle#begin(expand('~/.vim/bundle/'))
         "謎？
         NeoBundleFetch 'Shougo/neobundle.vim'
-        call neobundle#end()
         "ファイルタイプ用のプラグインとインデントを自動読み込みをonにする
         filetype plugin indent on
         NeoBundleCheck
 
         """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
         "NeoBundleからインストールするパッケージはここに追加する"
-        "補完候補などを表示してくれるプラグインらしい
-        NeoBundle 'Shougo/neocomplete.vim'
-        NeoBundle 'violetyk/neocomplete-php.vim'
-        NeoBundle 'Shougo/neosnippet'
-        NeoBundle 'Shougo/neosnippet-snippets'
-        "ステータスラインのために入れたはず
+        " status lineのデザイン用だったはず
         NeoBundle 'itchyny/lightline.vim'
-        NeoBundle 'Shougo/unite.vim'
-        NeoBundle 'ujihisa/unite-colorscheme'
-        "markdown関係
-        NeoBundle 'plasticboy/vim-markdown'
-        NeoBundle 'kannokanno/previm'
-        NeoBundle 'tyru/open-browser.vim'
+        " インデント用プラグイン
+        NeoBundle 'nathanaelkane/vim-indent-guides'
         "左側にディレクトリツリーを表示してくるぱっけーじ
         NeoBundle 'scrooloose/nerdtree'
-        "なんだっけ?
-        NeoBundle 'Shougo/vimproc', {
-            \ 'build' : {
-                \ 'windows' : 'make -f make_mingw32.mak',
-                \ 'cygwin' : 'make -f make_cygwin.mak',
-                \ 'mac' : 'make -f make_mac.mak',
-                \ 'unix' : 'make -f make_unix.mak',
-            \ },
-        \ }
-        " インデント用プラグインだったはず
-        NeoBundle 'nathanaelkane/vim-indent-guides'
-        "
-        NeoBundle 'jonathanfilip/vim-lucius'
-        NeoBundle 'vim-scripts/javacomplete'
-        "python用プラグイン
-        NeoBundle 'davidhalter/jedi-vim'
-        "NeoBundle 'Yggdroot/indentLine'
-        NeoBundle 'grep.vim'
+
+        "補完候補などを表示してくれるプラグインらしい
+"        NeoBundle 'Shougo/neocomplete.vim'
+"        NeoBundle 'violetyk/neocomplete-php.vim'
+"        NeoBundle 'Shougo/neosnippet'
+"        NeoBundle 'Shougo/neosnippet-snippets'
+        "ファイル操作系 後で決める TODO
+"        NeoBundle 'Shougo/unite.vim'
+"        NeoBundle 'ujihisa/unite-colorscheme'
+"        "markdown関係
+"        NeoBundle 'plasticboy/vim-markdown'
+"        NeoBundle 'kannokanno/previm'
+"        NeoBundle 'tyru/open-browser.vim'
+"        "なんだっけ?
+"        NeoBundle 'Shougo/vimproc', {
+"            \ 'build' : {
+"                \ 'windows' : 'make -f make_mingw32.mak',
+"                \ 'cygwin' : 'make -f make_cygwin.mak',
+"                \ 'mac' : 'make -f make_mac.mak',
+"                \ 'unix' : 'make -f make_unix.mak',
+"            \ },
+"        \ }
+"        "
+"        NeoBundle 'jonathanfilip/vim-lucius'
+"        NeoBundle 'vim-scripts/javacomplete'
+"        "python用プラグイン
+"        NeoBundle 'davidhalter/jedi-vim'
+"        NeoBundle 'grep.vim'
+        call neobundle#end()
         """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
         "ステータスラインを表示させるのとデザイン
         set laststatus=2
@@ -193,10 +185,17 @@ if has('mac') "setting for mac
               \ 'colorscheme': 'wombat',
               \ }
 
-        "Neocompleteの設定
-        let g:neocomplete#enable_at_startup = 1
-        "phpプラグインの設定
-        "let g:neocomplete_php_locale = 'ja'
+        "indentの可視化
+        let g:molokai_original=1
+        let g:indent_guides_auto_colors=0
+        autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd   ctermbg=236
+        autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  ctermbg=235
+        let g:indent_guides_enable_on_vim_startup=1
+
+"        "Neocompleteの設定
+"        let g:neocomplete#enable_at_startup = 1
+"        "phpプラグインの設定
+"        "let g:neocomplete_php_locale = 'ja'
         "NERDTreeの設定
         "隠しファイルをdefaultで表示
         let NERDTreeShowHidden = 1
@@ -215,13 +214,10 @@ if has('mac') "setting for mac
         "マウスオプション
         "terminal上のvimで元々有効になるやつじゃないからここでは意味がない
         let g:NERDTreeMouseMode=3
-        "markdown の設定
-        au BufRead,BufNewFile *.md set filetype=markdown
 
         "カラースキーマの設定
         colorscheme default
         "コメントの文字が見にくかったから変えたやつ
-        "hi Comment ctermfg=8
         hi Comment ctermfg=22
         hi colorcolumn ctermbg=233
         hi Directory ctermfg=14
@@ -235,19 +231,13 @@ if has('mac') "setting for mac
         hi MoreMsg ctermfg=10
         hi Boolean ctermfg=135
         hi CursorLineNr ctermfg=130
-        "indentの可視化
-        "let g:molokai_original=1
-        let g:indent_guides_auto_colors=0
-        autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd   ctermbg=236
-        autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  ctermbg=235
-        let g:indent_guides_enable_on_vim_startup=1
         "let g:indentLine_color_term = 111
         "let g:indentLine_char = '¦'
 
         "折り返しの設定
         "set breakindent
         "set breakindentopt=shift:4
-    endif "version >703 end
+   endif "version >703 end
 else "no thing
     " とりあえずなし
 endif
